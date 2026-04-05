@@ -1,82 +1,99 @@
-# ESP8266 WiFi Captive Portal
+# ESP32 WiFi Captive Portal — Google Sign-In Phishing
 
-## Disclaimer
-This project is for testing and educational purposes. Use it only against your own networks and devices. I don't take any responsibility for what you do with this program.
+> **Disclaimer:** This project is strictly for educational and authorized penetration testing purposes only. Use it only on your own networks and devices. Unauthorized use against others is illegal. The author takes no responsibility for misuse.
 
-## About this project
-WiFi captive portal for the NodeMCU (ESP8266 Module) with DNS spoofing.
+---
 
-The built-in LED will blink 5 times when a password is posted.
+## What This Is
 
-<b>Warning!</b> Your saved passwords will **not** disappear when you restart/power off the ESP8266.
+This is a **WiFi captive portal** running on an **ESP32 Dev Module** that impersonates a Google sign-in page. When a victim connects to the rogue access point and opens any website, they are intercepted and shown a fake Google login form that captures their email and password.
 
-<b>Note:</b> If you want to see the stored passwords go to "**172.0.0.1**<a>/pass</a>". For changing the SSID, go to "**172.0.0.1**<a>/ssid</a>"
+No internet connection is required. The ESP32 handles everything on-device using DNS spoofing and a built-in web server.
 
-<b>V. 2.0 (Fake sign in)</b>: https://github.com/125K/ESP8266_WiFi_Captive_Portal_2.0
+---
 
-# Showcase
+## Screenshots
 
-<a target="_blank" href="https://youtu.be/v4-5oX3RG94"><img width="700px" src="https://raw.githubusercontent.com/125K/ESP8266_WiFi_Captive_Portal/master/src/thumbnail.png"></a>
+| Page | Description |
+|---|---|
+| ![Sign In Page](images/Screenshot%202026-04-05%20094018.png) | **Sign-In Page** — what the victim sees when they connect and open any URL |
+| ![Signing In](images/Screenshot%202026-04-05%20094011.png) | **After Submit** — fake "Signing in..." screen shown after credentials are entered |
+| ![Captured Credentials](images/Screenshot%202026-04-05%20094247.png) | **Captured Credentials** — attacker view at `172.0.0.1/pass` showing stolen email & password |
+| ![Change SSID](images/Screenshot%202026-04-05%20094157.png) | **Change SSID** — attacker can rename the AP on the fly at `172.0.0.1/ssid` |
+| ![Cleared](images/Screenshot%202026-04-05%20094200.png) | **Cleared** — confirmation after wiping all credentials at `172.0.0.1/clear` |
 
-# Screenshots
+---
 
-<table>
-  <tr>
-    <th>172.0.0.1/index</th>
-    <th>172.0.0.1/post</th> 
-    <th>172.0.0.1/pass</th>
-    <th>172.0.0.1/ssid</th>
-  </tr>
-  <tr>
-    <td>This is the main page. Here the user will write his password and send it.</td>
-    <td>This is the post page. The user will be redirected here after posting the password.</td>
-    <td>This is where the attacker can retrieve all the passwords that has been posted.</td>
-    <td>Here the attacker can change the SSID name of the Access Point on the go.</td>
-  <tr>
-    <td><img width="200px" src="https://raw.githubusercontent.com/BlueArduino20/ESP8266_WiFi_Captive_Portal/master/src/1_Index_2.jpg" title="index"></td>
-    <td><img width="200px" src="https://raw.githubusercontent.com/BlueArduino20/ESP8266_WiFi_Captive_Portal/master/src/2_Post.jpg" title="post"></td>
-    <td><img width="200px" src="https://raw.githubusercontent.com/BlueArduino20/ESP8266_WiFi_Captive_Portal/master/src/3_Pass.jpg" title="pass"></td>
-<td><img width="200px" src="https://raw.githubusercontent.com/BlueArduino20/ESP8266_WiFi_Captive_Portal/master/src/4_ssid.jpg" title="ssid"></td>
-  </tr>
-</table>
+## How It Works
 
-Here you can donate if you liked my project and you want to support me:
+1. The ESP32 broadcasts a WiFi hotspot named **"Free WiFi"**
+2. When a victim connects and opens any URL (e.g. `google.com`), the ESP32's DNS server intercepts the request and redirects it to itself (`172.0.0.1`)
+3. The victim sees a **convincing Google Sign-In page** asking for their email and password
+4. On submission, credentials are saved to **EEPROM** (persists after power off)
+5. The built-in LED blinks 5 times to alert the attacker that credentials were captured
+6. The victim is shown a fake "Signing in... please wait" message
 
-<a href="https://www.buymeacoffee.com/rSiZtB3" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 41px !important;width: 174px !important;box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 3px 2px 0px rgba(190, 190, 190, 0.5) !important;" ></a>
+---
 
-# Installation (ESP8266 Flasher - Easy way)
+## Modifications Made
 
-1. Download <a href="https://github.com/nodemcu/nodemcu-flasher"><b>ESP8266 Flasher</b></a>.
+This project was originally written for the **ESP8266** by [125K](https://github.com/125K). The following changes were made:
 
-2. Download the <b><a href="https://github.com/125K/ESP8266_WiFi_Captive_Portal/releases/download/1.1/release.bin">release.bin</b></a> file.
+| Change | Details |
+|---|---|
+| **Ported to ESP32** | Replaced `ESP8266WiFi.h` + `ESP8266WebServer.h` with `WiFi.h` + `WebServer.h` |
+| **Fixed BUILTIN_LED** | Explicitly defined LED pin as `2` for ESP32 DevKit |
+| **New Google UI** | Replaced the old basic HTML with a pixel-accurate Google Sign-In page |
+| **Captures email + password** | Previously only captured WiFi password; now captures Google email and password |
+| **Better post-submit page** | Victim sees "Signing in... You will be connected to Free WiFi shortly" instead of a suspicious message |
+| **Updated EEPROM storage** | Stores credentials as `Email: x | Pass: y` entries |
 
-3. Open the ESP8266 Flasher and select the Node MCU port
+---
 
-<img width="80%" src="https://raw.githubusercontent.com/BlueArduino20/ESP8266_WiFi_Captive_Portal_2.0/master/src/1_port_selection.PNG">
+## Attacker Control Panel
 
-4. Then, go to the config tab and select the .bin file you've just downloaded.
+While connected to the ESP32's WiFi, open a browser and go to:
 
-<img width="80%" src="https://raw.githubusercontent.com/BlueArduino20/ESP8266_WiFi_Captive_Portal_2.0/master/src/2_file_selection.png">
+| URL | Function |
+|---|---|
+| `172.0.0.1/pass` | View all captured email + password credentials |
+| `172.0.0.1/clear` | Wipe all saved credentials from EEPROM |
+| `172.0.0.1/ssid` | Change the AP broadcast name on the fly |
 
-5. Finally, go back to the first tab and press "Flash"
+---
 
-6. Your Node MCU is ready!
+## Hardware Required
 
-# Installation (Arduino IDE)
+- ESP32 Dev Module (any standard 38-pin or 30-pin DevKit)
 
-1. Open your <a href="https://www.arduino.cc/en/main/software">Arduino IDE</a> and go to "File -> Preferences -> Boards Manager URLs" and paste the following link:
-``http://arduino.esp8266.com/stable/package_esp8266com_index.json``
-2. Go to "Tools -> Board -> Boards Manager", search "esp8266" and install esp8266
-3. Go to "Tools -> Board" and select you board"
-4. Download and open the sketch "<a href="https://github.com/125K/ESP8266_WiFi_Captive_Portal/blob/master/WiFi_Captive_Portal.ino"><b>WiFi_Captive_Portal.ino</b></a>"
-5. You can optionally change some parameters like the SSID name and texts of the page like title, subtitle, text body...
-6. Upload the code into your board.
-7. You are done!
+---
 
+## Setup (Arduino IDE)
 
-## Check out my other projects
+1. Open Arduino IDE and go to **File → Preferences**
+2. Add this to "Additional boards manager URLs":
+   ```
+   https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
+   ```
+3. Go to **Tools → Board → Boards Manager**, search `esp32`, install **"esp32 by Espressif Systems"**
+4. Select **Tools → Board → ESP32 Arduino → ESP32 Dev Module**
+5. Open `WiFi_Captive_Portal/WiFi_Captive_Portal.ino`
+6. Upload to your board
+7. Connect to the **"Free WiFi"** network and open any browser
 
-- **WiFi-Spam**: :email::satellite: Spam thousands of WiFi access points with custom SSIDs.
-  - https://github.com/125K/WiFi-Spam
-- **PwrDeauther**: :zap: Deauth a specific WiFi access point or an entire channel.
-  - https://github.com/125K/PwrDeauther
+---
+
+## File Structure
+
+```
+wifiphishing/
+├── WiFi_Captive_Portal/
+│   └── WiFi_Captive_Portal.ino   # Main sketch
+├── images/
+│   ├── Screenshot 2026-04-05 094018.png  # Sign-in page
+│   ├── Screenshot 2026-04-05 094011.png  # After submit page
+│   ├── Screenshot 2026-04-05 094247.png  # Captured credentials
+│   ├── Screenshot 2026-04-05 094157.png  # Change SSID page
+│   └── Screenshot 2026-04-05 094200.png  # Cleared page
+└── README.md
+```
