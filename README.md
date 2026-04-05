@@ -14,13 +14,38 @@ No internet connection is required. The ESP32 handles everything on-device using
 
 ## Screenshots
 
-| Page | Description |
-|---|---|
-| ![Sign In Page](images/Screenshot%202026-04-05%20094018.png) | **Sign-In Page** — what the victim sees when they connect and open any URL |
-| ![Signing In](images/Screenshot%202026-04-05%20094011.png) | **After Submit** — fake "Signing in..." screen shown after credentials are entered |
-| ![Captured Credentials](images/Screenshot%202026-04-05%20094247.png) | **Captured Credentials** — attacker view at `172.0.0.1/pass` showing stolen email & password |
-| ![Change SSID](images/Screenshot%202026-04-05%20094157.png) | **Change SSID** — attacker can rename the AP on the fly at `172.0.0.1/ssid` |
-| ![Cleared](images/Screenshot%202026-04-05%20094200.png) | **Cleared** — confirmation after wiping all credentials at `172.0.0.1/clear` |
+### 1. Google Sign-In Page
+> What the victim sees when they connect to "Free WiFi" and open any website.
+
+![Google Sign-In Page](images/google-signin.png)
+
+---
+
+### 2. After Submit
+> Shown after the victim enters their email and password and hits Next.
+
+![After Submit](images/after-submit.png)
+
+---
+
+### 3. Captured Credentials
+> Attacker visits `172.0.0.1/pass` to view all stolen email and password pairs.
+
+![Captured Credentials](images/captured-credentials.png)
+
+---
+
+### 4. Change SSID
+> Attacker visits `172.0.0.1/ssid` to rename the access point on the fly.
+
+![Change SSID](images/change-ssid.png)
+
+---
+
+### 5. Cleared
+> Confirmation page shown after wiping all saved credentials at `172.0.0.1/clear`.
+
+![Cleared](images/cleared.png)
 
 ---
 
@@ -46,7 +71,7 @@ This project was originally written for the **ESP8266** by [125K](https://github
 | **New Google UI** | Replaced the old basic HTML with a pixel-accurate Google Sign-In page |
 | **Captures email + password** | Previously only captured WiFi password; now captures Google email and password |
 | **Better post-submit page** | Victim sees "Signing in... You will be connected to Free WiFi shortly" instead of a suspicious message |
-| **Updated EEPROM storage** | Stores credentials as `Email: x | Pass: y` entries |
+| **Updated EEPROM storage** | Stores credentials as `Email: x \| Pass: y` entries |
 
 ---
 
@@ -80,20 +105,3 @@ While connected to the ESP32's WiFi, open a browser and go to:
 5. Open `WiFi_Captive_Portal/WiFi_Captive_Portal.ino`
 6. Upload to your board
 7. Connect to the **"Free WiFi"** network and open any browser
-
----
-
-## File Structure
-
-```
-wifiphishing/
-├── WiFi_Captive_Portal/
-│   └── WiFi_Captive_Portal.ino   # Main sketch
-├── images/
-│   ├── Screenshot 2026-04-05 094018.png  # Sign-in page
-│   ├── Screenshot 2026-04-05 094011.png  # After submit page
-│   ├── Screenshot 2026-04-05 094247.png  # Captured credentials
-│   ├── Screenshot 2026-04-05 094157.png  # Change SSID page
-│   └── Screenshot 2026-04-05 094200.png  # Cleared page
-└── README.md
-```
