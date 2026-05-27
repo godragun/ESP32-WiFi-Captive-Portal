@@ -62,7 +62,7 @@ No internet connection is required. The ESP32 handles everything on-device using
 
 ## Modifications Made
 
-This project was originally written for the **ESP8266** by [125K](https://github.com/125K). The following changes were made:
+ The following changes were made:
 
 | Change | Details |
 |---|---|
