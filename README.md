@@ -1,12 +1,12 @@
 # ESP32 WiFi Captive Portal — Google Sign-In Phishing
 
-> **Disclaimer:** This project is strictly for educational and authorized penetration testing purposes only. Use it only on your own networks and devices. Unauthorized use against others is illegal. The author takes no responsibility for misuse.
+> **Disclaimer:** This project is strictly for educational and authorized penetration testing purposes only. Use it only on your own networks and devices. Unauthorized use against others is illegal.
 
 ---
 
 ## What This Is
 
-This is a **WiFi captive portal** running on an **ESP32 Dev Module** that impersonates a Google sign-in page. When a victim connects to the rogue access point and opens any website, they are intercepted and shown a fake Google login form that captures their email and password.
+This is a **WiFi captive portal** running on an **ESP32 Dev Module** that impersonates a Google sign-in page. When a victim connects to the rogue access point and opens any website, they are intercepted and shown a phishing page.
 
 No internet connection is required. The ESP32 handles everything on-device using DNS spoofing and a built-in web server.
 
@@ -105,3 +105,9 @@ While connected to the ESP32's WiFi, open a browser and go to:
 5. Open `WiFi_Captive_Portal/WiFi_Captive_Portal.ino`
 6. Upload to your board
 7. Connect to the **"Free WiFi"** network and open any browser
+
+---
+
+## Credits
+
+This project was inspired by [Alpha-1729](https://github.com/Alpha-1729).
